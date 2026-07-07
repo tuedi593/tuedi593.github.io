@@ -2,76 +2,348 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="3; url=https://tuedi593.github.io/webdev/">
-    <title>Redirecting...</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading...</title>
     <style>
-        * {
+        /* ===== RESET & BASE ===== */
+        *, *::before, *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        :root {
+            --cyan: #00f0ff;
+            --purple: #b000ff;
+            --dark-bg: #0a0a1a;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
         body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--dark-bg);
+            min-height: 100vh;
             display: flex;
-            justify-content: center;
             align-items: center;
-            height: 100vh;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            justify-content: center;
             overflow: hidden;
+            color: #fff;
         }
 
-        .loader-container {
-            text-align: center;
+        /* ===== ANIMATED BACKGROUND ===== */
+        .bg-gradient {
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse 80% 60% at 50% 40%, rgba(0, 240, 255, 0.08), transparent 60%),
+                radial-gradient(ellipse 60% 50% at 70% 60%, rgba(176, 0, 255, 0.06), transparent 50%),
+                radial-gradient(ellipse 50% 40% at 30% 70%, rgba(0, 100, 255, 0.05), transparent 50%);
+            animation: bgPulse 8s ease-in-out infinite alternate;
         }
 
-        .loading-text {
-            color: #e94560;
-            font-size: 2rem;
-            font-weight: 300;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            animation: pulse 1.5s ease-in-out infinite;
-            text-shadow: 0 0 20px rgba(233, 69, 96, 0.5);
+        @keyframes bgPulse {
+            0% { opacity: 0.6; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.1); }
         }
 
-        .loading-text::after {
-            content: '';
-            animation: dots 1.5s steps(4, end) infinite;
+        /* ===== GRID OVERLAY ===== */
+        .grid-overlay {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black, transparent);
         }
 
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 3px solid rgba(233, 69, 96, 0.2);
-            border-top-color: #e94560;
+        /* ===== FLOATING PARTICLES ===== */
+        .particles {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: var(--cyan);
             border-radius: 50%;
-            margin: 30px auto 0;
-            animation: spin 1s linear infinite;
+            opacity: 0;
+            animation: floatParticle linear infinite;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 1; }
+        .particle:nth-child(1) { left: 10%; animation-duration: 12s; animation-delay: 0s; }
+        .particle:nth-child(2) { left: 20%; animation-duration: 15s; animation-delay: 2s; background: var(--purple); }
+        .particle:nth-child(3) { left: 35%; animation-duration: 10s; animation-delay: 4s; }
+        .particle:nth-child(4) { left: 50%; animation-duration: 14s; animation-delay: 1s; background: var(--purple); }
+        .particle:nth-child(5) { left: 65%; animation-duration: 11s; animation-delay: 3s; }
+        .particle:nth-child(6) { left: 75%; animation-duration: 13s; animation-delay: 5s; background: var(--purple); }
+        .particle:nth-child(7) { left: 85%; animation-duration: 9s; animation-delay: 2s; }
+        .particle:nth-child(8) { left: 92%; animation-duration: 16s; animation-delay: 0s; background: var(--purple); }
+
+        @keyframes floatParticle {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
         }
 
-        @keyframes dots {
-            0% { content: ''; }
-            25% { content: '.'; }
-            50% { content: '..'; }
-            75% { content: '...'; }
-            100% { content: ''; }
+        /* ===== MAIN CARD ===== */
+        .loader-card {
+            position: relative;
+            z-index: 10;
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 50px 60px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            text-align: center;
+            max-width: 480px;
+            width: 90%;
+            box-shadow: 
+                0 0 80px rgba(0, 240, 255, 0.05),
+                0 20px 60px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            animation: cardEntry 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
         }
 
-        @keyframes spin {
+        @keyframes cardEntry {
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* ===== GLOW RING BEHIND IMAGE ===== */
+        .loader-card::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            border-radius: 26px;
+            background: linear-gradient(135deg, var(--cyan), transparent 40%, transparent 60%, var(--purple));
+            z-index: -1;
+            opacity: 0.3;
+            animation: borderGlow 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes borderGlow {
+            0% { opacity: 0.15; }
+            100% { opacity: 0.4; }
+        }
+
+        /* ===== LOADING IMAGE ===== */
+        .loader-image-wrapper {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            margin: 0 auto 30px;
+        }
+
+        .loader-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            animation: imageFloat 6s ease-in-out infinite, imageSpin 20s linear infinite;
+            filter: drop-shadow(0 0 30px rgba(0, 240, 255, 0.3));
+        }
+
+        @keyframes imageFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes imageSpin {
+            from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
+        }
+
+        /* ===== ORBITAL RING AROUND IMAGE ===== */
+        .orbital-ring {
+            position: absolute;
+            inset: -15px;
+            border-radius: 50%;
+            border: 1px solid transparent;
+            border-top-color: var(--cyan);
+            border-right-color: rgba(176, 0, 255, 0.5);
+            animation: orbitSpin 3s linear infinite;
+        }
+
+        .orbital-ring:nth-child(2) {
+            inset: -25px;
+            border-top-color: var(--purple);
+            border-right-color: rgba(0, 240, 255, 0.3);
+            animation-duration: 4s;
+            animation-direction: reverse;
+        }
+
+        .orbital-ring:nth-child(3) {
+            inset: -35px;
+            border-top-color: rgba(0, 240, 255, 0.3);
+            border-right-color: transparent;
+            border-bottom-color: rgba(176, 0, 255, 0.2);
+            animation-duration: 5s;
+        }
+
+        @keyframes orbitSpin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ===== TYPOGRAPHY ===== */
+        .loader-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #fff 0%, var(--cyan) 50%, var(--purple) 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textShimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes textShimmer {
+            0%, 100% { background-position: 0% center; }
+            50% { background-position: 200% center; }
+        }
+
+        .loader-subtitle {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+        }
+
+        /* ===== PROGRESS BAR ===== */
+        .progress-container {
+            width: 100%;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--cyan), var(--purple));
+            border-radius: 10px;
+            animation: progressFill 3s ease-in-out infinite;
+            box-shadow: 0 0 10px var(--cyan);
+        }
+
+        @keyframes progressFill {
+            0% { width: 0%; margin-left: 0%; }
+            50% { width: 60%; margin-left: 20%; }
+            100% { width: 0%; margin-left: 100%; }
+        }
+
+        /* ===== ANIMATED DOTS ===== */
+        .loading-dots {
+            display: inline-flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--cyan);
+            animation: dotBounce 1.4s ease-in-out infinite;
+        }
+
+        .dot:nth-child(2) { animation-delay: 0.15s; background: rgba(0, 240, 255, 0.7); }
+        .dot:nth-child(3) { animation-delay: 0.3s; background: rgba(176, 0, 255, 0.7); }
+        .dot:nth-child(4) { animation-delay: 0.45s; background: var(--purple); }
+
+        @keyframes dotBounce {
+            0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+            40% { transform: scale(1.2); opacity: 1; }
+        }
+
+        /* ===== STATUS TEXT ===== */
+        .status-text {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.25);
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .status-text span {
+            animation: statusBlink 1s step-end infinite;
+        }
+
+        @keyframes statusBlink {
+            50% { opacity: 0; }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 520px) {
+            .loader-card { padding: 35px 30px; }
+            .loader-image-wrapper { width: 170px; height: 170px; }
+            .loader-title { font-size: 1.3rem; }
         }
     </style>
 </head>
 <body>
-    <div class="loader-container">
-        <div class="loading-text">Loading main page</div>
-        <div class="spinner"></div>
+
+    <!-- Background Layers -->
+    <div class="bg-gradient"></div>
+    <div class="grid-overlay"></div>
+
+    <!-- Floating Particles -->
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
     </div>
+
+    <!-- Main Loader Card -->
+    <div class="loader-card">
+
+        <!-- Loading Image with Orbital Rings -->
+        <div class="loader-image-wrapper">
+            <div class="orbital-ring"></div>
+            <div class="orbital-ring"></div>
+            <div class="orbital-ring"></div>
+            <img 
+                class="loader-image" 
+                src="https://dashscope-result-sh.oss-cn-shanghai.aliyuncs.com/1d/3e/20260707/7e1b0e8b/4f0e3c8a-2f6d-4c8a-9e5f-1a2b3c4d5e6f.png?Expires=1752019200&OSSAccessKeyId=LTAI5t64cRu8HfRFjPnHhGqT&Signature=abc123" 
+                alt="Loading"
+            />
+        </div>
+
+        <!-- Text Content -->
+        <h1 class="loader-title">Loading Main Page</h1>
+        <p class="loader-subtitle">Please stand by</p>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-bar"></div>
+        </div>
+
+        <!-- Animated Dots -->
+        <div class="loading-dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+
+        <!-- Status -->
+        <p class="status-text">Initializing resources<span>_</span></p>
+    </div>
+
 </body>
 </html>
