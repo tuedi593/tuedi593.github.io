@@ -246,26 +246,34 @@ document.addEventListener('DOMContentLoaded', () => {
       let hasError = false;
 
       // Validate required fields before submitting to Formspree
-      if (!formData.get('name').trim()) { hasError = true; shakeField(form.querySelector('[name="name"]')); }
-      if (!formData.get('email').trim()) { hasError = true; shakeField(form.querySelector('[name="email"]')); }
+      if (!formData.get('name').trim()) {
+        hasError = true;
+        shakeField(form.querySelector('[name="name"]'));
+      }
 
-      // Also validate email format
+      // Email is required and must be a valid format
       const emailValue = formData.get('email');
-      if (hasError && !isValidEmail(emailValue)) {
+      if (!emailValue.trim()) {
+        hasError = true;
+        shakeField(form.querySelector('[name="email"]'));
+      } else if (!isValidEmail(emailValue)) {
+        hasError = true;
         setFormError(form.querySelector('[name="email"]'), 'Please enter a valid email address.');
         shakeField(form.querySelector('[name="email"]'));
       }
 
-      // Also validate textarea
+      // Project description is required
       const desc = formData.get('projectDescription');
-      if (hasError && (!desc || !desc.trim().length)) {
+      if (!desc || !desc.trim().length) {
+        hasError = true;
         setFormError(form.querySelector('.form-description'), 'Please enter a project description.');
-        shakeField(form.querySelector('#descriptionInput'));
+        shakeField(form.querySelector('[name="projectDescription"]'));
       }
 
-      // Also validate phone if provided
+      // Phone is optional, but must be valid if provided
       const phone = formData.get('phone');
-      if (hasError && phone && !isValidPhone(phone)) {
+      if (phone && phone.trim() && !isValidPhone(phone)) {
+        hasError = true;
         setFormError(form.querySelector('[name="phone"]'), 'Please enter a valid phone number.');
         shakeField(form.querySelector('[name="phone"]'));
       }
@@ -308,10 +316,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const existingMsg = input.parentElement.querySelector('.form-error-msg');
       if (existingMsg) {
         existingMsg.textContent = message;
+        existingMsg.classList.add('show');
       } else {
         const msgEl = document.createElement('div');
-        msgEl.className = 'form-error-msg';
-        msgEl.style.display = 'block';
+        msgEl.className = 'form-error-msg show';
         msgEl.textContent = message;
         input.parentElement.appendChild(msgEl);
       }
