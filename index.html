@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -384,12 +383,12 @@
 </div>
 </div>
 </footer>
-<div id="successModal" class="modal-overlay">
+<div id="successModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
 <div class="modal-content">
+<button id="modalCloseBtn" class="modal-close-btn" aria-label="Close"><svg fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" viewbox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><line x1="18" x2="6" y1="6" y2="18"></line><line x1="6" x2="18" y1="6" y2="18"></line></svg></button>
 <span class="modal-icon"><svg fill="none" height="48" stroke="#00F294" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" viewbox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
-<h3 class="modal-title">Thank You!</h3>
+<h3 class="modal-title" id="modalTitle">Thank You!</h3>
 <p class="modal-message">Your inquiry has been sent successfully. I'll get back to you via your preferred contact method within the next 24 hours.</p>
-<button id="modalCloseBtn" class="modal-close"><svg fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" viewbox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><line x1="18" x2="6" y1="6" y2="18"></line><line x1="6" x2="18" y1="6" y2="18"></line></svg></button>
 </div>
 </div>
 
