@@ -200,138 +200,147 @@ document.addEventListener('DOMContentLoaded', () => {
   // INQUIRY FORM — FORMSPREE SUBMISSION + SUCCESS MODAL
   // ==========================================================================
   const form = document.getElementById('inquiryForm');
-  const submitBtn = form.querySelector('.form-submit-btn');
   const modalOverlay = document.getElementById('successModal');
   const modalCloseBtn = document.getElementById('modalCloseBtn');
 
+  // --- Success modal helpers ---
+  let modalTimer = null;
+
   function showSuccessModal() {
     if (!modalOverlay) return;
-    // Reset any existing error states on the form inputs
-    const errors = form.querySelectorAll('.form-error-msg.show');
-    errors.forEach(el => el.classList.remove('show'));
-
     modalOverlay.classList.add('show');
-    setTimeout(() => {
-      // Auto-dismiss after 5 seconds
-      setTimeout(dismissModal, 5000);
-    }, 400);
+    modalOverlay.setAttribute('aria-hidden', 'false');
+    // Auto-dismiss after 5 seconds
+    clearTimeout(modalTimer);
+    modalTimer = setTimeout(dismissModal, 5000);
   }
 
   function dismissModal() {
     if (!modalOverlay) return;
     modalOverlay.classList.remove('show');
+    modalOverlay.setAttribute('aria-hidden', 'true');
   }
 
-  // Close modal: X button, click outside card, Escape key
-  const closeModal = () => dismissModal();
   if (modalCloseBtn) {
-    modalCloseBtn.addEventListener('click', closeModal);
+    modalCloseBtn.addEventListener('click', dismissModal);
   }
   if (modalOverlay) {
     modalOverlay.addEventListener('click', (e) => {
-      if (e.target === modalOverlay) closeModal();
+      if (e.target === modalOverlay) dismissModal();
     });
   }
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') dismissModal();
   });
 
-  // Handle form submission via Formspree POST API
+  // --- Form submission via Formspree ---
   if (form) {
+    const submitBtn = form.querySelector('.form-submit-btn');
+    const spinner = form.querySelector('.submit-spinner');
+    const btnLabel = submitBtn ? submitBtn.querySelector('span:first-child') : null;
+
+    // Clear a field's error message as soon as the user starts typing again
+    form.querySelectorAll('.form-input, .form-select, .form-textarea').forEach((field) => {
+      field.addEventListener('input', () => clearFieldError(field));
+    });
+
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
-      
-      const formData = new FormData(form);
-      const submitBtnOriginalText = submitBtn.textContent.trim();
-      let hasError = false;
+      if (!submitBtn) return;
 
-      // Validate required fields before submitting to Formspree
-      if (!formData.get('name').trim()) {
-        hasError = true;
-        shakeField(form.querySelector('[name="name"]'));
+      // Validate all fields; collect every error before showing them
+      const errors = validateForm(form);
+      if (errors.length > 0) {
+        errors.forEach(({ field, message }) => {
+          setFormError(field, message);
+          shakeField(field);
+        });
+        return;
       }
 
-      // Email is required and must be a valid format
-      const emailValue = formData.get('email');
-      if (!emailValue.trim()) {
-        hasError = true;
-        shakeField(form.querySelector('[name="email"]'));
-      } else if (!isValidEmail(emailValue)) {
-        hasError = true;
-        setFormError(form.querySelector('[name="email"]'), 'Please enter a valid email address.');
-        shakeField(form.querySelector('[name="email"]'));
-      }
-
-      // Project description is required
-      const desc = formData.get('projectDescription');
-      if (!desc || !desc.trim().length) {
-        hasError = true;
-        setFormError(form.querySelector('.form-description'), 'Please enter a project description.');
-        shakeField(form.querySelector('[name="projectDescription"]'));
-      }
-
-      // Phone is optional, but must be valid if provided
-      const phone = formData.get('phone');
-      if (phone && phone.trim() && !isValidPhone(phone)) {
-        hasError = true;
-        setFormError(form.querySelector('[name="phone"]'), 'Please enter a valid phone number.');
-        shakeField(form.querySelector('[name="phone"]'));
-      }
-
-      if (hasError) return;
-
-      // Set loading state on button
-      submitBtn.textContent = '';
-      const spinner = form.querySelector('.submit-spinner');
-      spinner.classList.add('show');
-      submitBtn.classList.add('loading');
+      setLoading(true);
 
       try {
         const response = await fetch(form.action, {
           method: 'POST',
-          body: formData,
-          headers: {
-            'Accept': 'application/json'
-          }
+          body: new FormData(form),
+          headers: { 'Accept': 'application/json' }
         });
 
-        if (response.ok || response.status === 200) {
+        if (response.ok) {
+          form.reset();
           showSuccessModal();
         } else {
-          const errorText = await response.text();
-          setFormError(form.querySelector('[name="email"]'), `Submission failed: ${errorText}`);
+          setFormError(form.querySelector('[name="email"]'), 'Submission failed. Please try again.');
         }
       } catch (err) {
         setFormError(form.querySelector('[name="email"]'), 'Network error. Please try again later.');
       } finally {
-        // Restore button state
-        submitBtn.textContent = submitBtnOriginalText;
-        spinner.classList.remove('show');
-        submitBtn.classList.remove('loading');
+        setLoading(false);
       }
     });
 
-    // Helper: shake an input element and add inline error message
-    function setFormError(input, message) {
-      const existingMsg = input.parentElement.querySelector('.form-error-msg');
-      if (existingMsg) {
-        existingMsg.textContent = message;
-        existingMsg.classList.add('show');
+    // Toggle the button's loading state without destroying its DOM
+    function setLoading(loading) {
+      if (!submitBtn || !spinner || !btnLabel) return;
+      if (loading) {
+        btnLabel.textContent = 'Sending...';
+        spinner.classList.add('show');
+        submitBtn.classList.add('loading');
+        submitBtn.disabled = true;
       } else {
-        const msgEl = document.createElement('div');
-        msgEl.className = 'form-error-msg show';
-        msgEl.textContent = message;
-        input.parentElement.appendChild(msgEl);
+        btnLabel.textContent = 'Send Inquiry';
+        spinner.classList.remove('show');
+        submitBtn.classList.remove('loading');
+        submitBtn.disabled = false;
       }
+    }
+
+    // Validate the form and return an array of { field, message } errors
+    function validateForm(formEl) {
+      const errors = [];
+      const name = formEl.querySelector('[name="name"]');
+      const email = formEl.querySelector('[name="email"]');
+      const desc = formEl.querySelector('[name="projectDescription"]');
+      const phone = formEl.querySelector('[name="phone"]');
+
+      if (!name.value.trim()) {
+        errors.push({ field: name, message: 'Please enter your name.' });
+      }
+      if (!email.value.trim()) {
+        errors.push({ field: email, message: 'Please enter your email address.' });
+      } else if (!isValidEmail(email.value)) {
+        errors.push({ field: email, message: 'Please enter a valid email address.' });
+      }
+      if (!desc.value.trim()) {
+        errors.push({ field: desc, message: 'Please enter a project description.' });
+      }
+      if (phone.value.trim() && !isValidPhone(phone.value)) {
+        errors.push({ field: phone, message: 'Please enter a valid phone number.' });
+      }
+      return errors;
+    }
+
+    function setFormError(input, message) {
+      if (!input) return;
+      clearFieldError(input);
+      const msgEl = document.createElement('div');
+      msgEl.className = 'form-error-msg show';
+      msgEl.textContent = message;
+      input.parentElement.appendChild(msgEl);
+    }
+
+    function clearFieldError(input) {
+      if (!input) return;
+      const msg = input.parentElement.querySelector('.form-error-msg');
+      if (msg) msg.remove();
     }
 
     function shakeField(input) {
       if (!input) return;
-      const animName = 'shakeError';
-      // Remove animation class to allow re-triggering
-      input.classList.remove(animName);
-      void input.offsetWidth; // Force reflow
-      input.classList.add(animName);
+      input.classList.remove('shakeError');
+      void input.offsetWidth; // Force reflow so the animation can re-trigger
+      input.classList.add('shakeError');
     }
 
     function isValidEmail(val) {
