@@ -1080,6 +1080,14 @@ a {
   border-radius: 20px;
 }
 
+.form-title {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1.75rem;
+}
+
 .form-field-group {
   margin-bottom: 1.75rem;
 }
@@ -1298,6 +1306,7 @@ a {
 }
 
 .modal-content {
+  position: relative;
   background: rgba(20, 23, 34, 0.95);
   backdrop-filter: blur(16px);
   border: 1px solid var(--border-color);
@@ -1350,6 +1359,9 @@ a {
 }
 
 .modal-close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1358,7 +1370,6 @@ a {
   background: transparent;
   border: none;
   color: var(--text-muted);
-  font-size: 1.25rem;
   cursor: pointer;
   border-radius: 50%;
   transition: var(--transition-fast);
