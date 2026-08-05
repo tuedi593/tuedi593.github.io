@@ -1076,29 +1076,29 @@ a {
 .form-card {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--border-color);
-  padding: 2rem;
+  padding: 1.5rem;
   border-radius: 20px;
 }
 
 .form-title {
   font-family: var(--font-heading);
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 1.75rem;
+  margin-bottom: 1.25rem;
 }
 
 .form-field-group {
-  margin-bottom: 1.75rem;
+  margin-bottom: 1.15rem;
 }
 
 .form-label {
   display: block;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 1px;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.35rem;
   font-weight: 600;
 }
 
@@ -1121,7 +1121,7 @@ a {
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 10px;
-  padding: 0.8rem 1rem;
+  padding: 0.65rem 0.9rem;
   transition: var(--transition-normal);
   outline: none;
 }
@@ -1132,12 +1132,21 @@ a {
 }
 
 .form-select {
-  appearance: auto;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
   cursor: pointer;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23646b7a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 1rem center;
   padding-right: 2.5rem;
+}
+
+.form-select option {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 .form-input:focus,
@@ -1149,14 +1158,14 @@ a {
 
 .form-textarea {
   resize: vertical;
-  min-height: 110px;
+  min-height: 80px;
 }
 
 /* Toggle-style Radio Buttons */
 .form-radio-group {
   display: flex;
-  gap: 1rem;
-  margin-top: 0.4rem;
+  gap: 0.6rem;
+  margin-top: 0.2rem;
 }
 
 .form-radio-label {
@@ -1174,8 +1183,8 @@ a {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.6rem 1.2rem;
-  font-size: 0.9rem;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.85rem;
   color: var(--text-primary);
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1209,7 +1218,7 @@ a {
   color: var(--text-primary);
   font-family: var(--font-sans);
   font-weight: 600;
-  padding: 0.85rem 2rem;
+  padding: 0.7rem 1.75rem;
   border-radius: 12px;
   cursor: pointer;
   transition: var(--transition-normal);
