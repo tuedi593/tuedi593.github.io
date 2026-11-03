@@ -7,7 +7,7 @@ Personal portfolio website for **Edi-webdev**, a full-stack web developer buildi
 A single-page site showcasing web development services and selected projects:
 
 - **Hero / About** — intro with call-to-action buttons and service tags
-- **Expertise** — 5 service cards: Company Profile Websites, Custom Ecommerce, Villa & Booking Websites, Fast/Secure/SEO-friendly builds, and **AI Customer Service (24/7)** — a custom-built assistant trained on the client's own products, pricing and policies
+- **Expertise** — 4 service cards: Company Profile Websites, **AI Customer Service (24/7)** — a custom-built assistant trained on the client's own products, pricing and policies (works on website or WhatsApp), Villa & Booking Websites, and Fast/Secure/SEO-friendly builds
 - **Portfolio** — 5 featured projects:
   - [JB Trans Lampung](https://jbtranslampung.com) — car rental booking site (PHP, WhatsApp booking)
   - [Bali Bike Adventures](https://balibikeadventures.com) — adventure travel portal (WordPress API, Leaflet JS)
