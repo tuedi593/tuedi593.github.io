@@ -632,49 +632,6 @@ a {
   line-height: 1.6;
 }
 
-/* AI chat sample inside stat card */
-.ai-chat-sample {
-  margin-top: 1.25rem;
-  padding: 1rem;
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid var(--border-color);
-  border-radius: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-}
-
-.chat-bubble {
-  padding: 0.65rem 0.9rem;
-  border-radius: 12px;
-  font-size: 0.85rem;
-  line-height: 1.5;
-  max-width: 95%;
-}
-
-.chat-visitor {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid var(--border-color);
-  align-self: flex-end;
-  color: var(--text-secondary);
-}
-
-.chat-ai {
-  background: rgba(0, 242, 148, 0.08);
-  border: 1px solid rgba(0, 242, 148, 0.25);
-  align-self: flex-start;
-  color: var(--text-primary, #fff);
-}
-
-.chat-ai-label {
-  display: block;
-  font-size: 0.7rem;
-  font-weight: 600;
-  color: var(--primary);
-  margin-bottom: 0.25rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
 
 /* ==========================================================================
    PORTFOLIO SECTION
