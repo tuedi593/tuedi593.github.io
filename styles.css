@@ -632,6 +632,13 @@ a {
   line-height: 1.6;
 }
 
+.stat-note {
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  margin-top: 0.75rem;
+  opacity: 0.8;
+}
+
 
 /* ==========================================================================
    PORTFOLIO SECTION
